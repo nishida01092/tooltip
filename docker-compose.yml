@@ -1,0 +1,51 @@
+version: '3.4'
+ 
+services:
+  express:
+      container_name: express
+      build:
+        context: .
+        dockerfile: ./backend/Dockerfile
+      tty: true
+      ports:
+        - 3000:3000
+      volumes:
+        - type: bind
+          source: "./backend"
+          target: "/node/src/app"
+      working_dir: /node/src/app
+      depends_on:
+        - database
+      command: sh -c "sleep 1 && npm install && npm start"
+      networks:
+        - default
+        - node_network
+  database:
+    container_name: database
+    build:
+      context: .
+      dockerfile: ./database/Dockerfile
+    tty: true
+    platform: linux/x86_64
+    ports:
+      - 3306:3306
+    env_file:
+      - ./database/.env
+    volumes:
+      - type: volume
+        source: mysql_volume
+        target: /var/lib/mysql
+      - type: bind
+        source: ./database/init
+        target: /docker-entrypoint-initdb.d
+    networks:
+      - default
+      - node_network
+
+volumes:
+  mysql_volume:
+    name: mysql_volume
+ 
+networks:
+  node_network:
+    external: true

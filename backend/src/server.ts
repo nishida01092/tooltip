@@ -1,91 +1,47 @@
-#!/usr/bin/env node
+import express from 'express'
+import * as mysql from "promise-mysql";
+import config from './config/config';
 
-/**
- * Module dependencies.
- */
+const app = express();
+const port = 3000;
+app.use(express.json());
+//フォームからのデータ受け取り
+app.use(express.urlencoded({extended:true}));
+app.listen(config.port, () => {
+  console.log(`Start on port ${config.port}.`);
+});
 
-var app = require('./app');
-var debug = require('debug')('src:server');
-var http = require('http');
+app.get('/', (req, res) => res.send('Test Express!'))
 
-/**
- * Get port from environment and store in Express.
- */
+const connection = async () => {
+  return await mysql.createConnection(config.db);
+};
+connection()
+  .then((connection)=>{
+    const result = connection.query('SELECT id FROM sample');
+    console.log("DB");
+    connection.end;
+    return result;
+  })
+  .then((result)=>{
+    console.log(result);
+  });
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+// app.post("/insert",(req,res)=>{
+//   const feedback:string = req.body.name;
+//   connection()
+//     .then((connection)=>{
+//       const result = 
+//           connection.query(
+//             'INSERT INTO SAMPLE (ID,NAME) VALUES (5,?)',
+//             [feedback]
+//           );
+//       connection.end();
+//       return result;
+//     })
+//     .then(function(rows){
+//       res.send(rows);
+//     });
+// });
 
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val: string): number | string | boolean {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error: any): void {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening(): void {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}
-
+// app.listen(port, () => console.log(`Example app listening on port ${port}!`))

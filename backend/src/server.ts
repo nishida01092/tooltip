@@ -16,10 +16,22 @@ app.get('/', (req, res) => res.send('Test Express!'))
 const connection = async () => {
   return await mysql.createConnection(config.db);
 };
+//SELECT文
 connection()
   .then((connection)=>{
     const result = connection.query('SELECT id FROM sample');
-    console.log("DB");
+    connection.end;
+    return result;
+  })
+  .then((result)=>{
+    console.log(result);
+  });
+  //INSERT文
+connection()
+  .then((connection)=>{
+    const sql = 'INSERT INTO sample' + ' SET ?';
+    const insert = {id:3,name:"akira"}
+    const result = connection.query(sql,insert);
     connection.end;
     return result;
   })

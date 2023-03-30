@@ -1,5 +1,7 @@
 import express from 'express'
+import { Request, Response } from 'express-serve-static-core';
 import * as mysql from "promise-mysql";
+import { ParsedQs } from 'qs';
 import config from './config/config';
 
 const app = express();
@@ -12,8 +14,12 @@ app.listen(config.port, () => {
 });
 
 app.get('/', (req, res) => res.send('Test Express!'))
-app.post('/post', (req, res) => res.send('Test Post!'))
-
+app.post('/post', (req, res) => test(req,res))
+//テスト
+function test(req: Request,res: Response){
+  console.log("aa");
+  res.send('Test Post!');
+}
 const connection = async () => {
   return await mysql.createConnection(config.db);
 };

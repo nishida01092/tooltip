@@ -18,7 +18,7 @@ app.post('/post', (req, res) => test(req,res))
 //テスト
 function test(req: Request,res: Response){
   console.log("aa");
-  res.send('Test Post!');
+  res.json({id:1});
 }
 const connection = async () => {
   return await mysql.createConnection(config.db);

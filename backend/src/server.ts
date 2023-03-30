@@ -17,6 +17,7 @@ app.get('/', (req, res) => res.send('Test Express!'))
 app.post('/post', (req, res) => test(req,res))
 //テスト
 function test(req: Request,res: Response){
+  console.log(req.body)
   console.log("aa");
   res.json({id:1});
 }

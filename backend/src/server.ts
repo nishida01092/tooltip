@@ -39,21 +39,3 @@ connection()
     console.log(result);
   });
 
-// app.post("/insert",(req,res)=>{
-//   const feedback:string = req.body.name;
-//   connection()
-//     .then((connection)=>{
-//       const result = 
-//           connection.query(
-//             'INSERT INTO SAMPLE (ID,NAME) VALUES (5,?)',
-//             [feedback]
-//           );
-//       connection.end();
-//       return result;
-//     })
-//     .then(function(rows){
-//       res.send(rows);
-//     });
-// });
-
-// app.listen(port, () => console.log(`Example app listening on port ${port}!`))

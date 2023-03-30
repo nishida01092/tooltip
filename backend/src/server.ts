@@ -12,6 +12,7 @@ app.listen(config.port, () => {
 });
 
 app.get('/', (req, res) => res.send('Test Express!'))
+app.post('/post', (req, res) => res.send('Test Post!'))
 
 const connection = async () => {
   return await mysql.createConnection(config.db);

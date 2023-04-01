@@ -1,5 +1,11 @@
 #!/bin/sh
 CMD_MYSQL="mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE}"
+
+$CMD_MYSQL -e "create table sample (
+    id int(10)  AUTO_INCREMENT NOT NULL primary key,
+    name varchar(50) NOT NULL
+    );"
+
 $CMD_MYSQL -e "create table mst_tooltipDB (
     id int  AUTO_INCREMENT NOT NULL primary key,
     word varchar(50) NOT NULL,

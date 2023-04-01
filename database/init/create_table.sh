@@ -20,7 +20,7 @@ $CMD_MYSQL -e "create table trn_feedback (
     id int AUTO_INCREMENT NOT NULL,
     tooltip_id int NOT NULL,
     user_id int ,
-    insert_time timestamp NOT NULL
+    insert_time timestamp NOT NULL default current_timestamp on update current_timestamp 
     );"
 
 $CMD_MYSQL -e "create table mst_feedback (
@@ -30,4 +30,5 @@ $CMD_MYSQL -e "create table mst_feedback (
     );"
 
 
-$CMD_MYSQL -e  "insert into mst_tooltipDB values (1,'西田','エンジニア','','',1,1);"
+$CMD_MYSQL -e  "insert into mst_tooltipDB values (1,'西田','エンジニア','','',0,0);"
+$CMD_MYSQL -e  "INSERT INTO trn_feedback(tooltip_id ,user_id) VALUES (0,0)"

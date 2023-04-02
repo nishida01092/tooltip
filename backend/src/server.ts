@@ -6,19 +6,19 @@ import config from './config/config';
 const app = express();
 app.use(express.json());
 //フォームからのデータ受け取り
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 //ポートをバインド
 app.listen(config.port, () => {
   console.log(`Start on port ${config.port}.`);
 });
 //ルーティング
 app.get('/', (req, res) => res.send('Test Express!'))
-app.post('/post', (req, res) => test(req,res))
+app.post('/post', (req, res) => test(req, res))
 //テスト
-function test(req: Request,res: Response){
+function test(req: Request, res: Response) {
   console.log(req.body)
   console.log("aa");
-  res.json({id:1});
+  res.json({ id: 1 });
 }
 //MYSQLとの接続を確立
 const connection = async () => {
@@ -38,7 +38,7 @@ connection()
 connection()
   .then((connection) => {
     const sql = 'INSERT INTO sample' + ' SET ?';
-    const insert = { id: 3, name: "akira" }
+    const insert = { id: 0, name: "akira" }
     const result = connection.query(sql, insert);
     connection.end;
     return result;

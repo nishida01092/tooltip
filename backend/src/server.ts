@@ -1,91 +1,48 @@
-#!/usr/bin/env node
+import express from 'express'
+import { Request, Response } from 'express-serve-static-core';
+import * as mysql from "promise-mysql";
+import config from './config/config';
 
-/**
- * Module dependencies.
- */
-
-var app = require('./app');
-var debug = require('debug')('src:server');
-var http = require('http');
-
-/**
- * Get port from environment and store in Express.
- */
-
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val: string): number | string | boolean {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
+const app = express();
+app.use(express.json());
+//フォームからのデータ受け取り
+app.use(express.urlencoded({ extended: true }));
+//ポートをバインド
+app.listen(config.port, () => {
+  console.log(`Start on port ${config.port}.`);
+});
+//ルーティング
+app.get('/', (req, res) => res.send('Test Express!'))
+app.post('/post', (req, res) => test(req, res))
+//テスト
+function test(req: Request, res: Response) {
+  console.log(req.body)
+  console.log("aa");
+  res.json({ id: 1 });
 }
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error: any): void {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening(): void {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}
-
+//MYSQLとの接続を確立
+const connection = async () => {
+  return await mysql.createConnection(config.db);
+};
+//SELECT文
+connection()
+  .then((connection) => {
+    const result = connection.query('SELECT id FROM sample');
+    connection.end;
+    return result;
+  })
+  .then((result) => {
+    console.log(result);
+  });
+//INSERT文
+connection()
+  .then((connection) => {
+    const sql = 'INSERT INTO sample' + ' SET ?';
+    const insert = { id: 0, name: "akira" }
+    const result = connection.query(sql, insert);
+    connection.end;
+    return result;
+  })
+  .then((result) => {
+    console.log(result);
+  });

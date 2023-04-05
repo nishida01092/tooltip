@@ -2,7 +2,8 @@
 開発中(進行度60%)
 ## 概要
 tooltipアプリケーションのAPIサーバー。<br>
-詳細はフロントが参考になる。
+詳細はフロントが参考になる。<br>
+https://github.com/nishida01092/naming
 ## 技術、環境
 ▶︎技術<br>
 node.js,mysql,Express,Typescript<br>

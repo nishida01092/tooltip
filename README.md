@@ -5,7 +5,7 @@ tooltipアプリケーションのAPIサーバー。<br>
 詳細はフロントが参考になる。
 ## 技術、環境
 ▶︎技術<br>
-node.js,mysql,Express<br>
+node.js,mysql,Express,Typescript<br>
 ▶︎環境<br>
 DockerDektop,GithubDesktop,DBeaver<br>
 

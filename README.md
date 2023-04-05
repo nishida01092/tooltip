@@ -1,3 +1,14 @@
+##toolTipアプリケーション
+開発中(進行度60%)
+##概要
+tooltipアプリケーションのAPIサーバー。<br>
+詳細はフロントが参考になる。
+##技術、環境
+▶︎技術<br>
+node.js,mysql,Express<br>
+▶︎環境<br>
+DockerDektop,GithubDesktop,DBeaver<br>
+
 ## 初期設定
 <!-- envファイルの作成 -->
 ▶︎DB設定<br>

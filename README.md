@@ -1,11 +1,12 @@
+## 初期設定
 <!-- envファイルの作成 -->
 cd database
 touch .env
 <!-- envファイルにログイン情報を記載 -->
-MYSQL_DATABASE=
-MYSQL_USER=
-MYSQL_PASSWORD=
-MYSQL_ROOT_PASSWORD=
+MYSQL_DATABASE=<br>
+MYSQL_USER=<br>
+MYSQL_PASSWORD=<br>
+MYSQL_ROOT_PASSWORD=<br>
 <!-- ネットワークの作成 -->
 docker network create node_network
 <!-- コンテナの起動 -->

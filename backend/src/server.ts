@@ -1,5 +1,6 @@
 import express from 'express'
 import { Request, Response } from 'express-serve-static-core';
+import { Connection } from 'promise-mysql';
 import * as mysql from "promise-mysql";
 import config from './config/config';
 
@@ -20,8 +21,28 @@ const connection = async () => {
   return await mysql.createConnection(config.db);
 };
 
+//型定義
+interface Feedback {
+  filter: any;
+  id: number;
+  feedback_id: number;
+  feedback_name: string;
+}
+
+interface Tooltip {
+  id: number;
+  word: string;
+  description: string;
+  asking: string;
+  feedbacks: Feedback[];
+}
+
+type TooltipArray = Tooltip[];
+
+
+
 //tooltipの初期表示用
-function indexAction(req: Request, res: Response){
+function indexAction(req: Request, res: Response):void {
   connection()
     .then((connection) => {
       const sql_tooltip = 
@@ -52,14 +73,14 @@ function indexAction(req: Request, res: Response){
       return Promise.all([
         connection.query(sql_tooltip),
         connection.query(sql_feedback),
-        connection.end
+        connection.end()
       ])
     })
     .then((results) => {
-        const tooltips = results[0];
-        const feedbacks = results[1];
-        const tooltipsWithFeedbacks = tooltips.map((tooltip: { id: any; }) => {
-          const tooltipFeedbacks = feedbacks.filter((feedback: { id: any; }) => feedback.id === tooltip.id);
+        const tooltips:Tooltip[] = results[0];
+        const feedbacks:Feedback[] = results[1];
+        const tooltipsWithFeedbacks = tooltips.map((tooltip: { id: number; }) => {
+          const tooltipFeedbacks = feedbacks.filter((feedback: { id: number; }) => feedback.id === tooltip.id);
           return {
             ...tooltip,
             feedbacks: tooltipFeedbacks
@@ -70,14 +91,23 @@ function indexAction(req: Request, res: Response){
     .catch((error) => {
       console.error('Connection error:', error);
     })
+    .finally(()=>{
+    })
   }
 //INSERT文
 function feedbackAction(req: Request, res: Response){
+  console.log(req.body.feedback_id)
   connection()
     .then((connection) => {
-      const sql = 'INSERT INTO sample' + ' SET ?';
-      const insert = { id: 0, name: "akira" }
-      const result = connection.query(sql, insert);
+      const sql = 
+          `
+          INSERT INTO trn_feedback 
+            (feedback_id)
+          VALUES
+            (?)
+          `;
+      const value = req.body.feedback_id
+      const result = connection.query(sql, value);
       connection.end;
       return result;
     })

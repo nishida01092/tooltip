@@ -24,13 +24,44 @@ const connection = async () => {
 function indexAction(req: Request, res: Response){
   connection()
     .then((connection) => {
-      const result = connection.query('SELECT id FROM sample');
+      const sql_tooltip = 
+            `
+            SELECT 
+              mt.id,
+              mt.word,
+              mt.description,
+              mt.asking,
+              mf.id AS feedback_id,
+              mf.feedback_name           
+            FROM 
+              mst_tooltip AS mt
+            `
+      const sql_feedback = 
+            `
+            SELECT 
+              mt.id,
+              mf.id AS feedback_id,
+              mf.feedback_name           
+            FROM 
+              mst_tooltip AS mt
+            LEFT JOIN
+              mst_feedback AS mf
+            ON
+              mt.id = mf.tooltip_id
+            
+            `
+      const result1 = connection.query(sql_tooltip);
+      const result2 = connection.query(sql_feedback);
       connection.end;
-      return result;
+      return [result1,result2];
     })
     .then((result) => {
+      console.log(result);
       res.json(result);
-    });
+    })
+    // .then((result) => {
+    //   // res.json(result);
+    // });
 }
 
 //INSERT文

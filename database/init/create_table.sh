@@ -33,3 +33,5 @@ $CMD_MYSQL -e "create table mst_feedback (
 
 $CMD_MYSQL -e  "insert into mst_tooltipDB values (1,'西田','エンジニア','','',0,0);"
 $CMD_MYSQL -e  "INSERT INTO trn_feedback(tooltip_id ,user_id) VALUES (0,0)"
+
+ALTER TABLE tooltip_DB.mst_tooltip MODIFY COLUMN view_number int 1 NOT NULL;

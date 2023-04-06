@@ -6,18 +6,19 @@ $CMD_MYSQL -e "create table sample (
     name varchar(50) NOT NULL
     );"
 
-$CMD_MYSQL -e "create table mst_tooltipDB (
+$CMD_MYSQL -e "create table mst_tooltip (
     id int  AUTO_INCREMENT NOT NULL primary key,
     word varchar(50) NOT NULL,
-    description varchar(100) NOT NULL,
-    url varchar(50),
+    description varchar(200) NOT NULL,
+    asking varchar(50) NOT NULL,
+    url varchar(200),
     image_url varchar(50),
     view_number int NOT NULL,
     login_type int NOT NULL
-    );"
+   );"
 
 $CMD_MYSQL -e "create table trn_feedback (
-    id int AUTO_INCREMENT NOT NULL,
+    id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
     tooltip_id int NOT NULL,
     user_id int ,
     insert_time timestamp NOT NULL default current_timestamp on update current_timestamp 
@@ -26,7 +27,7 @@ $CMD_MYSQL -e "create table trn_feedback (
 $CMD_MYSQL -e "create table mst_feedback (
     id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
     tooltip_id int NOT NULL,
-    feedback varchar(100)
+    feedback_name varchar(30) NOT NULL
     );"
 
 

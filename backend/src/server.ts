@@ -30,12 +30,11 @@ function indexAction(req: Request, res: Response){
               mt.id,
               mt.word,
               mt.description,
-              mt.asking,
-              mf.id AS feedback_id,
-              mf.feedback_name           
+              mt.asking          
             FROM 
               mst_tooltip AS mt
-            `
+            ORDER BY mt.id
+            `;
       const sql_feedback = 
             `
             SELECT 
@@ -48,22 +47,30 @@ function indexAction(req: Request, res: Response){
               mst_feedback AS mf
             ON
               mt.id = mf.tooltip_id
-            
-            `
-      const result1 = connection.query(sql_tooltip);
-      const result2 = connection.query(sql_feedback);
-      connection.end;
-      return [result1,result2];
+            ORDER BY mt.id, mf.id
+            `;
+      return Promise.all([
+        connection.query(sql_tooltip),
+        connection.query(sql_feedback),
+        connection.end
+      ])
     })
-    .then((result) => {
-      console.log(result);
-      res.json(result);
+    .then((results) => {
+        const tooltips = results[0];
+        const feedbacks = results[1];
+        const tooltipsWithFeedbacks = tooltips.map((tooltip: { id: any; }) => {
+          const tooltipFeedbacks = feedbacks.filter((feedback: { id: any; }) => feedback.id === tooltip.id);
+          return {
+            ...tooltip,
+            feedbacks: tooltipFeedbacks
+          };
+        });
+        res.json(tooltipsWithFeedbacks);
     })
-    // .then((result) => {
-    //   // res.json(result);
-    // });
-}
-
+    .catch((error) => {
+      console.error('Connection error:', error);
+    })
+  }
 //INSERT文
 function feedbackAction(req: Request, res: Response){
   connection()

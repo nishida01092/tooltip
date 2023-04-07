@@ -1,5 +1,6 @@
 import express from 'express'
 import { Request, Response } from 'express-serve-static-core';
+import { Connection } from 'promise-mysql';
 import * as mysql from "promise-mysql";
 import config from './config/config';
 
@@ -20,26 +21,93 @@ const connection = async () => {
   return await mysql.createConnection(config.db);
 };
 
-//tooltipの初期表示用
-function indexAction(req: Request, res: Response){
-  connection()
-    .then((connection) => {
-      const result = connection.query('SELECT id FROM sample');
-      connection.end;
-      return result;
-    })
-    .then((result) => {
-      res.json(result);
-    });
+//型定義
+interface Feedback {
+  filter: any;
+  id: number;
+  feedback_id: number;
+  feedback_name: string;
 }
 
-//INSERT文
-function feedbackAction(req: Request, res: Response){
+interface Tooltip {
+  id: number;
+  word: string;
+  description: string;
+  asking: string;
+  feedbacks: Feedback[];
+}
+
+type TooltipArray = Tooltip[];
+
+
+
+//tooltipの初期表示用
+function indexAction(req: Request, res: Response):void {
   connection()
     .then((connection) => {
-      const sql = 'INSERT INTO sample' + ' SET ?';
-      const insert = { id: 0, name: "akira" }
-      const result = connection.query(sql, insert);
+      const sql_tooltip = 
+            `
+            SELECT 
+              mt.id,
+              mt.word,
+              mt.description,
+              mt.asking          
+            FROM 
+              mst_tooltip AS mt
+            ORDER BY mt.id
+            `;
+      const sql_feedback = 
+            `
+            SELECT 
+              mt.id,
+              mf.id AS feedback_id,
+              mf.feedback_name           
+            FROM 
+              mst_tooltip AS mt
+            LEFT JOIN
+              mst_feedback AS mf
+            ON
+              mt.id = mf.tooltip_id
+            ORDER BY mt.id, mf.id
+            `;
+      return Promise.all([
+        connection.query(sql_tooltip),
+        connection.query(sql_feedback),
+        connection.end()
+      ])
+    })
+    .then((results) => {
+        const tooltips:Tooltip[] = results[0];
+        const feedbacks:Feedback[] = results[1];
+        const tooltipsWithFeedbacks = tooltips.map((tooltip: { id: number; }) => {
+          const tooltipFeedbacks = feedbacks.filter((feedback: { id: number; }) => feedback.id === tooltip.id);
+          return {
+            ...tooltip,
+            feedbacks: tooltipFeedbacks
+          };
+        });
+        res.json(tooltipsWithFeedbacks);
+    })
+    .catch((error) => {
+      console.error('Connection error:', error);
+    })
+    .finally(()=>{
+    })
+  }
+//INSERT文
+function feedbackAction(req: Request, res: Response){
+  console.log(req.body.feedback_id)
+  connection()
+    .then((connection) => {
+      const sql = 
+          `
+          INSERT INTO trn_feedback 
+            (feedback_id)
+          VALUES
+            (?)
+          `;
+      const value = req.body.feedback_id
+      const result = connection.query(sql, value);
       connection.end;
       return result;
     })

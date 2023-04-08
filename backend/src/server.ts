@@ -1,8 +1,9 @@
 import express from 'express'
-import { Request, Response } from 'express-serve-static-core';
-import { Connection } from 'promise-mysql';
+import {  Request, Response } from 'express-serve-static-core';
 import * as mysql from "promise-mysql";
 import config from './config/config';
+
+
 
 const app = express();
 app.use(express.json());
@@ -12,14 +13,35 @@ app.use(express.urlencoded({ extended: true }));
 app.listen(config.port, () => {
   console.log(`Start on port ${config.port}.`);
 });
+
+
 //ルーティング
 app.get('/tooltip/index', (req, res) => indexAction(req, res))
+app.get('/tooltip/test', (req, res) => testAction(req, res))
 app.post('/tooltip/feedback', (req, res) => feedbackAction(req,res))
 
 //MYSQLとの接続を確立
-const connection = async () => {
+const connection = async (req: Request) => {
   return await mysql.createConnection(config.db);
+  // if(req.hostname === "localhost"){
+  //   return await mysql.createConnection(config.db_dev);
+  // }else{
+  //   return await mysql.createConnection(config.db);
+  // }
 };
+
+//test
+function testAction(req: Request, res: Response):void {
+  connection(req)
+    .then((connection) => {
+      const sql_tooltip = 
+            `
+            SELECT * FROM sample
+            `;
+      
+      return connection.query(sql_tooltip);
+    })
+}
 
 //型定義
 interface Feedback {
@@ -43,7 +65,7 @@ type TooltipArray = Tooltip[];
 
 //tooltipの初期表示用
 function indexAction(req: Request, res: Response):void {
-  connection()
+  connection(req)
     .then((connection) => {
       const sql_tooltip = 
             `
@@ -97,7 +119,7 @@ function indexAction(req: Request, res: Response):void {
 //INSERT文
 function feedbackAction(req: Request, res: Response){
   console.log(req.body.feedback_id)
-  connection()
+  connection(req)
     .then((connection) => {
       const sql = 
           `

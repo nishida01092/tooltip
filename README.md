@@ -9,8 +9,8 @@ https://github.com/nishida01092/naming
 node.js,mysql,Express,Typescript<br>
 ▶︎環境<br>
 DockerDektop,GithubDesktop,DBeaver<br>
-▶︎デプロイ
-AWSLambda,EC2,RDS(MYSQL),APIgateway
+▶︎デプロイ<br>
+AWSLambda,EC2,RDS(MYSQL),Apigateway
 ## 初期設定
 <!-- envファイルの作成 -->
 ▶︎DB設定<br>

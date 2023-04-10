@@ -3,7 +3,7 @@ import * as mysql from 'promise-mysql';
 import config from '../config/config';
 
 //MYSQLとの接続を確立
-const connection = async () => {
+async function connection (){
   try {
     return await mysql.createConnection(config.db_dev);
   } catch (error) {
@@ -74,6 +74,7 @@ interface Feedback {
         };
       });
       res.json(tooltipsWithFeedbacks);
+
     } catch (error) {
       console.error('Connection error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -100,3 +101,4 @@ export async function feedbackAction(req: Request, res: Response) {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+

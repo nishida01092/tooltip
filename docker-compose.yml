@@ -41,9 +41,6 @@ services:
       - type: volume
         source: mysql_volume
         target: /var/lib/mysql
-      - type: bind
-        source: ./database/init
-        target: /docker-entrypoint-initdb.d
     networks:
       - default
       - node_network

@@ -11,6 +11,7 @@ node.js,mysql,Express,Typescript<br>
 DockerDektop,GithubDesktop,DBeaver<br>
 ▶︎デプロイ<br>
 AWSLambda,EC2,RDS(MYSQL),Apigateway
+![構成図](![FireShot Capture 011 - 無題 – Figma - www figma com](https://user-images.githubusercontent.com/126932667/231783482-952ab2d5-3d6e-4825-bf99-2123fae350ab.png))
 ## 初期設定
 <!-- envファイルの作成 -->
 ▶︎DB設定<br>
